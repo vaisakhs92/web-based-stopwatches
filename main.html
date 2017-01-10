@@ -1,0 +1,274 @@
+<html>
+   <head>
+      <title>Perfect Timing</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+      <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+      <script type="text/javascript">
+         var d1 = 0;
+         var h1 = 0;
+         var m1 = 0;
+         var s1 = 0;
+         var d2 = 0;
+         var h2 = 0;
+         var m2 = 0;
+         var s2 = 0;
+         var targetValueObs = 0;
+         var stopWatch1Val = 0;
+         var pauseStopWatch1Now;
+         var stopWatch2Val = targetValueObs;
+         var pauseStopWatch2Now;
+
+         function targetChange() {
+             var target = document.getElementById("Target").value;
+             targetValueObs = target;
+             timeStopWatches2(target);
+             init1();
+             init2();
+             reset1();
+             reset2();
+         }
+
+         function resetStopWatch1Value() {
+             clearInterval(pauseStopWatch1Now);
+             d1 = 0;
+             h1 = 0;
+             m1 = 0;
+             s1 = 0;
+             stopWatch1Val = 0;
+         }
+
+         function resetStopWatch2Value() {
+             clearInterval(pauseStopWatch2Now);
+             timeStopWatches2(targetValueObs);
+             stopWatch2Val = targetValueObs;
+         }
+
+         function init1() {
+             document.getElementById("d1").value = "" + d1 + "";
+             document.getElementById("h1").value = "" + h1 + "";
+             document.getElementById("m1").value = "" + m1 + "";
+             document.getElementById("s1").value = "" + s1 + "";
+         }
+
+         function init2() {
+             document.getElementById("d2").value = "" + d2 + "";
+             document.getElementById("h2").value = "" + h2 + "";
+             document.getElementById("m2").value = "" + m2 + "";
+             document.getElementById("s2").value = "" + s2 + "";
+         }
+
+         function updateStopWatch1() {
+             if (stopWatch1Val == targetValueObs) {
+                 disableOnStopWatch1();
+                 clearInterval(pauseStopWatch1Now);
+             } else {
+                 stopWatch1Val = stopWatch1Val + 1;
+                 s1 = s1 + 1;
+                 if (s1 == 60) {
+                     s1 = 0;
+                     m1 = m1 + 1;
+                     if (m1 == 60) {
+                         m1 = 0;
+                         h1 = h1 + 1;
+                         if (h1 == 24) {
+                             h1 = 0;
+                             d1 = d1 + 1;
+                         }
+                     }
+                 }
+                 init1();
+             }
+         }
+
+         function startStopWatch1() {
+             pauseStopWatch1Now = setInterval(updateStopWatch1, 1000);
+             document.getElementById("Start1").disabled = true;
+         }
+
+         function resetStopWatch1() {
+             reset1();
+         }
+
+         function pauseStopWatch1() {
+             clearInterval(pauseStopWatch1Now);
+             document.getElementById("Start1").disabled = false;
+         }
+
+         function reset1() {
+             document.getElementById("Start1").disabled = false;
+             document.getElementById("Pause1").disabled = false;
+             resetStopWatch1Value();
+             init1();
+         }
+
+         function disableOnStopWatch1() {
+             document.getElementById("Start1").disabled = true;
+             document.getElementById("Pause1").disabled = true;
+         }
+
+         function updateStopWatch2() {
+             if (stopWatch2Val == 0) {
+                 disableOnStopWatch2();
+                 clearInterval(pauseStopWatch2Now);
+             } else {
+                 stopWatch2Val = stopWatch2Val - 1;
+                 timeStopWatches2(stopWatch2Val);
+                 init2();
+             }
+         }
+
+         function startStopWatch2() {
+             pauseStopWatch2Now = setInterval(updateStopWatch2, 1000);
+             document.getElementById("Start2").disabled = true;
+         }
+
+         function timeStopWatches2(targetVal) {
+             d2 = Math.floor(targetVal / (24 * 60 * 60));
+             days = targetVal % (24 * 60 * 60);
+             h2 = Math.floor(days / (60 * 60));
+             hours = targetVal % (60 * 60);
+             m2 = Math.floor(hours / 60);
+             minutes = targetVal % 60;
+             s2 = Math.floor(minutes);
+         }
+
+         function pauseStopWatch2() {
+             clearInterval(pauseStopWatch2Now);
+             document.getElementById("Start2").disabled = false;
+         }
+
+         function resetStopWatch2() {
+             reset2();
+         }
+
+         function reset2() {
+             document.getElementById("Start2").disabled = false;
+             document.getElementById("Pause2").disabled = false;
+             resetStopWatch2Value();
+             init2();
+         }
+
+         function disableOnStopWatch2() {
+             document.getElementById("Start2").disabled = true;
+             document.getElementById("Pause2").disabled = true;
+         }
+      </script>
+   </head>
+   <style>
+      .well {
+      margin-top: 15%;
+      margin-bottom: 5%;
+      }
+   </style>
+   <body>
+      <nav class="navbar navbar-inverse">
+         <a class="navbar-brand" style="font-size: 25px;">Perfect Timing - ClickTime </a>
+      </nav>
+      <div class="well">
+         <div class="container-fluid">
+            <div class="text-center">
+               <div class="row">
+                  <div class="col-xs-4">
+                  </div>
+                  <div class="col-sm-4">
+                     <input class="form-control text-center" type="number" placeholder="Enter your target" id="Target" name="Target" onchange="targetChange()" />
+                  </div>
+               </div>
+            </div>
+            <div class="text-center">
+               <div class="row">
+                  <div class="col-xs-4">
+                  </div>
+                  <div class="col-sm-4">
+                     <div class="text-center">
+                        <label for="stopwatch1">
+                           <h5><strong>Counting Target</strong></h5>
+                        </label>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <br/>
+            <div class="col-sm-3">
+               <div class="text-center">
+                  <div class="panel panel-default">
+                     <div class="panel-heading">Count up</div>
+                     <ul class="list-group">
+                        <li class="list-group-item">
+                           Days : &nbsp&nbsp
+                           <input class="text-center" placeholder="00" id="d1" name="d1" disabled/>
+                        </li>
+                        <li class="list-group-item">
+                           Hours : &nbsp&nbsp
+                           <input class="text-center" placeholder="00" id="h1" name="h1" disabled/>
+                        </li>
+                        <li class="list-group-item">
+                           Minutes :
+                           <input class=" text-center" placeholder="00" id="m1" name="m1" disabled/>
+                        </li>
+                        <li class="list-group-item">
+                           Seconds:
+                           <input class=" text-center" placeholder="00" id="s1" name="s1" disabled/>
+                        </li>
+                     </ul>
+                  </div>
+               </div>
+               <div class="text-center">
+                  <div class="row">
+                     <div class="btn-group">
+                        <button type="button" class="btn btn-info" id="Start1" name="Start1" data-placement="bottom" data-toggle="tooltip" title="Start it" onclick="startStopWatch1()"><span class="glyphicon glyphicon-play"></span>
+                        </button>
+                        <button type="button" class="btn btn-info" id="Pause1" name="Pause1" data-placement="bottom" data-toggle="tooltip" title="Pause it" onclick="pauseStopWatch1()"><span class="glyphicon glyphicon-pause"></span>
+                        </button>
+                        <button type="button" class="btn btn-info" id="Reset1" name="Reset1" data-placement="bottom" data-toggle="tooltip" title="Reset it" onclick="resetStopWatch1()"><span class="glyphicon glyphicon-refresh"></span>
+                        </button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="col-sm-6">
+            </div>
+            <div class="col-sm-3">
+               <div class="text-center">
+                  <div class="panel panel-default">
+                     <div class="panel-heading">Count down</div>
+                     <ul class="list-group">
+                        <li class="list-group-item">
+                           Days : &nbsp&nbsp
+                           <input class="text-center" placeholder="00" id="d2" name="d2" disabled/>
+                        </li>
+                        <li class="list-group-item">
+                           Hours : &nbsp&nbsp
+                           <input class="text-center" placeholder="00" id="h2" name="h2" disabled/>
+                        </li>
+                        <li class="list-group-item">
+                           Minutes :
+                           <input class=" text-center" placeholder="00" id="m2" name="m2" disabled/>
+                        </li>
+                        <li class="list-group-item">
+                           Seconds:
+                           <input class=" text-center" placeholder="00" id="s2" name="s2" disabled/>
+                        </li>
+                     </ul>
+                  </div>
+               </div>
+               <div class="text-center">
+                  <div class="row">
+                     <div class="btn-group">
+                        <button type="button" class="btn btn-info" id="Start2" name="Start2" data-placement="bottom" data-toggle="tooltip" title="Start it" onclick="startStopWatch2()"><span class="glyphicon glyphicon-play"></span>
+                        </button>
+                        <button type="button" class="btn btn-info" id="Pause2" name="Pause2" data-placement="bottom" data-toggle="tooltip" title="Pause it" onclick="pauseStopWatch2()"><span class="glyphicon glyphicon-pause"></span>
+                        </button>
+                        <button type="button" class="btn btn-info" id="Reset2" name="Reset2" data-placement="bottom" data-toggle="tooltip" title="Reset it" onclick="resetStopWatch2()"><span class="glyphicon glyphicon-refresh"></span>
+                        </button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </body>
+</html>
